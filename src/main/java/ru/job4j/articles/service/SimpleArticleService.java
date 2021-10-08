@@ -25,13 +25,12 @@ public class SimpleArticleService implements ArticleService {
     public void generate(Store<Word> wordStore, int count, Store<Article> articleStore) {
         LOGGER.info("Геренация статей в количестве {}", count);
         var words = wordStore.findAll();
-        for (int i = 0; i < count / 1000; i++) {
-            var articles = IntStream.iterate(0, j -> j < 1000, j -> j + 1)
+        IntStream.iterate(0, j -> j < count, j -> j + 1)
                     .peek(j -> LOGGER.info("Сгенерирована статья № {}", j))
                     .mapToObj((x) -> articleGenerator.generate(words))
                     .map(SoftReference::new)
-                    .collect(Collectors.toList());
-            articles.stream().map(SoftReference::get).forEach(articleStore::save);
+                    .map(SoftReference::get)
+                    .forEach(articleStore::save);
         }
     }
-}
+
