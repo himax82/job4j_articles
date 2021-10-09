@@ -28,8 +28,6 @@ public class SimpleArticleService implements ArticleService {
         IntStream.iterate(0, j -> j < count, j -> j + 1)
                     .peek(j -> LOGGER.info("Сгенерирована статья № {}", j))
                     .mapToObj((x) -> articleGenerator.generate(words))
-                    .map(SoftReference::new)
-                    .map(SoftReference::get)
                     .forEach(articleStore::save);
         }
     }
